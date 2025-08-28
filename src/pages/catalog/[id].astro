@@ -1,0 +1,56 @@
+---
+import type { Department } from "../../model/department";
+import type { CatalogItem, CourseData, Section } from "../../model/catalog";
+
+import Layout from "../../layouts/Layout.astro";
+import Course from "../../components/catalog/Course.svelte";
+
+export async function getStaticPaths() {
+    const response = await fetch(
+        "https://pub-64d1712225e343d78b0dbf7c06803c3a.r2.dev/uvm/2025-08/departments.json",
+    );
+    const data = (await response.json()) as Department[];
+
+    const catalogRes = await fetch(
+        "https://pub-64d1712225e343d78b0dbf7c06803c3a.r2.dev/uvm/2025-08/catalog.json",
+    );
+    const catalog = (await catalogRes.json()) as CatalogItem[];
+
+    return data.map((department) => {
+        const id = department.id.toUpperCase();
+        const name = department.name;
+
+        const courses = catalog
+            .filter((item) => {
+                const course = item.course;
+                return course.subject == id;
+            })
+            .map((item) => {
+                let course = item.course;
+
+                course.sections.sort((a: Section, b: Section) => {
+                    return a.crn - b.crn;
+                });
+
+                return item.course;
+            })
+            .toSorted((a: CourseData, b: CourseData) => {
+                return a.number.localeCompare(b.number);
+            });
+
+        return {
+            params: { id },
+            props: { name, courses },
+        };
+    });
+}
+
+const { id } = Astro.params;
+const { name, courses } = Astro.props;
+---
+
+<Layout>
+    <h2 class="text-xl font-semibold mb-4">{name}</h2>
+
+    {courses.map((course) => <Course client:load course={course} />)}
+</Layout>

@@ -1,0 +1,25 @@
+---
+import type { Department } from "../model/department";
+
+import Layout from "../layouts/Layout.astro";
+
+const response = await fetch(
+    "https://pub-64d1712225e343d78b0dbf7c06803c3a.r2.dev/uvm/2025-08/departments.json",
+);
+const data = (await response.json()) as Department[];
+---
+
+<Layout>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {
+            data.map((department) => (
+                <a href={"/catalog/" + department.id.toUpperCase()}>
+                    <div class="p-4 border-1 border-gray-300 bg-gray-100 hover:bg-gray-200">
+                        <b class="mr-2">{department.id}</b>
+                        <span>{department.name}</span>
+                    </div>
+                </a>
+            ))
+        }
+    </div>
+</Layout>
