@@ -1,10 +1,11 @@
 <script lang="ts">
     import { type Block, type Section } from "../../model/catalog";
+    import { scheduleState } from "../../model/store";
 
     const DAYS = ["M", "T", "W", "Th", "F"];
 
     let { section }: { section: Section } = $props();
-    let isSelected = $state(false);
+    let isSelected = $state(scheduleState.get().selected.has(section.id));
 
     const blocksByDay = $derived(
         Object.fromEntries(
@@ -27,7 +28,17 @@
         ...new Set(section.blocks.map((block: Block) => block.building)),
     ]);
 
-    const toggleSelect = () => (isSelected = !isSelected);
+    const toggleSelect = () => {
+        const currentState = scheduleState.get().selected;
+        if (isSelected) {
+            currentState.delete(section.id);
+            scheduleState.set({ selected: currentState });
+        } else {
+            scheduleState.set({ selected: currentState.add(section.id) });
+        }
+
+        isSelected = !isSelected;
+    };
 
     function formatTime(dateTime: string): string {
         const [hours, minutes] = dateTime.split(":");
