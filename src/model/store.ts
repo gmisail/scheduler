@@ -13,7 +13,6 @@ export const scheduleState = persistentMap<ScheduleState>(
     encode(selected) {
       return JSON.stringify([...selected]);
     },
-
     decode(value) {
       try {
         const selectedArr = JSON.parse(value);
