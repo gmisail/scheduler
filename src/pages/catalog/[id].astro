@@ -50,7 +50,7 @@ const { name, courses } = Astro.props;
 ---
 
 <Layout>
-    <h2 class="text-xl font-semibold mb-4">{name}</h2>
+    <h2 class="dark:text-white text-xl font-semibold mb-4">{name}</h2>
 
     <div class="space-y-2">
         {courses.map((course) => <Course client:load course={course} />)}

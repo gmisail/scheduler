@@ -8,6 +8,9 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  server: {
+    allowedHosts: ["nixos.tail6de92.ts.net"],
+  },
   integrations: [svelte()],
   site: "https://gmisail.me",
   base: "/scheduler",

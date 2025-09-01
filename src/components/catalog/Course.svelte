@@ -13,20 +13,20 @@
 
 <div class="mb-2">
     <button
-        class={{
-            "w-full text-left hover:bg-gray-50 border-1 border-gray-300 p-4": true,
-        }}
+        class={"w-full text-left dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-4"}
         onclick={toggle}
     >
-        <b class="mr-2">
+        <b class="mr-2 text-white">
             {course.subject}
             {course.number}
         </b>
-        <span>{course.title}</span>
-        <p class="text-gray-800">{course.description}</p>
+        <span class="dark:text-white">{course.title}</span>
+        <p class="text-gray-800 dark:text-gray-100">
+            {course.description}
+        </p>
     </button>
 
-    <div class="bg-gray-100">
+    <div class="bg-gray-100 dark:bg-black/25">
         {#if isOpen}
             {#each course.sections as section, i}
                 <CourseSection {section} />
