@@ -16,7 +16,6 @@ export const scheduleState = persistentMap<ScheduleState>(
     decode(value) {
       try {
         const selectedArr = JSON.parse(value);
-        console.log(selectedArr);
         return new Set<string>(selectedArr);
       } catch (e) {
         console.error(e);

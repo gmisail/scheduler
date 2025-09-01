@@ -5,7 +5,6 @@
     const { course } = $props();
 
     let isOpen = $state(false);
-    let selectedSections = $state(new Set());
 
     function toggle() {
         isOpen = !isOpen;

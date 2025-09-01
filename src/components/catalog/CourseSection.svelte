@@ -1,10 +1,14 @@
 <script lang="ts">
     import { type Block, type Section } from "../../model/catalog";
+    import { DAY_LABEL, DAYS, formatTime } from "../../model/day";
     import { scheduleState } from "../../model/store";
 
-    const DAYS = ["M", "T", "W", "Th", "F"];
+    type CourseSectionProps = {
+        section: Section;
+    };
 
-    let { section }: { section: Section } = $props();
+    let { section }: CourseSectionProps = $props();
+
     let isSelected = $state(scheduleState.get().selected.has(section.id));
 
     const blocksByDay = $derived(
@@ -21,11 +25,19 @@
     );
 
     const instructors = $derived([
-        ...new Set(section.blocks.map((block: Block) => block.instructor)),
+        ...new Set(
+            section.blocks
+                .filter((block) => block.instructor != null)
+                .map((block: Block) => block.instructor),
+        ),
     ]);
 
     const buildings = $derived([
-        ...new Set(section.blocks.map((block: Block) => block.building)),
+        ...new Set(
+            section.blocks
+                .filter((block) => block.building != null)
+                .map((block: Block) => block.building),
+        ),
     ]);
 
     const toggleSelect = () => {
@@ -39,14 +51,6 @@
 
         isSelected = !isSelected;
     };
-
-    function formatTime(dateTime: string): string {
-        const [hours, minutes] = dateTime.split(":");
-        const hourNum = parseInt(hours);
-        const period = hourNum >= 12 ? "PM" : "AM";
-        const hour12 = hourNum % 12 || 12;
-        return `${hour12}:${minutes} ${period}`;
-    }
 </script>
 
 <button
@@ -61,15 +65,23 @@
         <span class="font-semibold">
             {section.crn}-{section.sec}
         </span>
-        <span>{instructors.join(", ")}</span>
-        <span>{buildings.join(", ")}</span>
+
+        {#if instructors.length > 0}
+            <span id="instructors">{instructors.join(", ")}</span>
+        {/if}
+
+        {#if section.sec.startsWith("OL")}
+            <span>Online</span>
+        {:else}
+            <span>{buildings.join(", ")}</span>
+        {/if}
     </div>
     <div class="text-left">
         {#each DAYS as DAY}
             <div>
                 {#if DAY in blocksByDay}
                     <span class="font-semibold">
-                        {DAY}
+                        {DAY_LABEL.get(DAY) ?? ""}
                     </span>
                 {/if}
 
