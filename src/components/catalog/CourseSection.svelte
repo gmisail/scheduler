@@ -58,7 +58,7 @@
         "w-full flex justify-between px-4 py-4 border-1 border-t-0 border-gray-300 dark:border-gray-600": true,
         "bg-blue-200 hover:bg-blue-200/50 dark:bg-blue-200/70 dark:hover:bg-blue-200/80 dark:text-black":
             isSelected,
-        "hover:bg-black/25 dark:text-white": !isSelected,
+        "hover:bg-black/5 dark:hover:bg-black/15 dark:text-white": !isSelected,
     }}
     onclick={toggleSelect}
 >
