@@ -16,7 +16,7 @@
         class={"w-full text-left dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-4"}
         onclick={toggle}
     >
-        <b class="mr-2 text-white">
+        <b class="mr-2 dark:text-white">
             {course.subject}
             {course.number}
         </b>
