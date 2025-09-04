@@ -53,6 +53,14 @@ const { name, courses } = Astro.props;
     <h2 class="dark:text-white text-xl font-semibold mb-4">{name}</h2>
 
     <div class="space-y-2">
-        {courses.map((course) => <Course client:load course={course} />)}
+        {
+            courses.length > 0 ? (
+                courses.map((course) => <Course client:load course={course} />)
+            ) : (
+                <div class="dark:text-white">
+                    Could not find any courses for this department.
+                </div>
+            )
+        }
     </div>
 </Layout>

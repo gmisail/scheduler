@@ -1,0 +1,89 @@
+<script lang="ts">
+    import type { CatalogItem } from "../../model/catalog";
+    import { getColorForCrn } from "../../model/color";
+    import { DAY_LABEL, DAYS, extractTime } from "../../model/day";
+    import Event from "./Event.svelte";
+
+    const { catalog }: { catalog: CatalogItem[] } = $props();
+
+    let currentSchedule = $state(0);
+    let numSchedules = $state(catalog.length);
+
+    const nextSchedule = () => {
+        currentSchedule = Math.min(currentSchedule + 1, numSchedules - 1);
+    };
+
+    const prevSchedule = () => {
+        currentSchedule = Math.max(0, currentSchedule - 1);
+    };
+
+    const entry = $derived(catalog[currentSchedule]);
+    const course = $derived(entry.course);
+    const sections = $derived(course.sections);
+</script>
+
+<div class="mb-4 flex items-center justify-between">
+    <button
+        class={"w-20 selected:bg-blue-200 dark:text-white dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-2"}
+        onclick={prevSchedule}
+    >
+        {"<"}
+    </button>
+    <div class="dark:text-white">
+        {#if numSchedules > 0}
+            {currentSchedule + 1} / {numSchedules}
+        {:else}
+            <i>No schedules available.</i>
+        {/if}
+    </div>
+    <button
+        class={"w-20 dark:text-white dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-2"}
+        onclick={nextSchedule}
+    >
+        {">"}
+    </button>
+</div>
+
+<div class="grid grid-cols-5 gap-4 mb-4">
+    {#each DAYS as DAY}
+        <div class="relative">
+            <div class="text-center pb-2 dark:text-white">
+                {DAY_LABEL.get(DAY)}
+            </div>
+
+            {#each sections as section}
+                {#each section.blocks as block}
+                    {#if block.day == DAY}
+                        <Event
+                            title={course.title}
+                            startTime={extractTime(block.start_time)}
+                            endTime={extractTime(block.end_time)}
+                            color={getColorForCrn(block.crn)}
+                        >
+                            <div>
+                                {course.subject}
+                                {course.number}
+                            </div>
+                            <div>
+                                {section.crn}-{section.sec}
+                            </div>
+                            <div>{block.instructor}</div>
+                            <div>{block.building} {block.room}</div>
+                        </Event>
+                    {/if}
+                {/each}
+            {/each}
+
+            <div class="bg-gray-100 dark:bg-gray-700">
+                {#each { length: 16 }, i}
+                    <div
+                        class={{
+                            "h-[60px]": true,
+                            "border-t-1 border-black/25": i > 0,
+                        }}
+                    ></div>
+                {/each}
+            </div>
+        </div>
+    {/each}
+</div>
