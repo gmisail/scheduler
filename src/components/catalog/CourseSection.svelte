@@ -1,15 +1,22 @@
 <script lang="ts">
-    import { type Block, type Section } from "../../model/catalog";
-    import { DAY_LABEL, DAYS, formatTime } from "../../model/day";
-    import { scheduleState } from "../../model/store";
+    import {
+        type Block,
+        type CourseData,
+        type Section,
+    } from "../../lib/catalog";
+    import { DAY_LABEL, DAYS, formatTime } from "../../lib/day";
+    import { scheduleState } from "../../lib/store";
 
     type CourseSectionProps = {
         section: Section;
+        course: CourseData;
     };
 
-    let { section }: CourseSectionProps = $props();
+    let { section, course }: CourseSectionProps = $props();
 
-    let isSelected = $state(scheduleState.get().selected.has(section.id));
+    let isSelected = $state(
+        scheduleState.get().schedule.isSectionSelected(section),
+    );
 
     const blocksByDay = $derived(
         Object.fromEntries(
@@ -41,13 +48,11 @@
     ]);
 
     const toggleSelect = () => {
-        const currentState = scheduleState.get().selected;
-        if (isSelected) {
-            currentState.delete(section.id);
-            scheduleState.set({ selected: currentState });
-        } else {
-            scheduleState.set({ selected: currentState.add(section.id) });
-        }
+        const currentState = scheduleState.get().schedule;
+
+        scheduleState.set({
+            schedule: currentState.toggleSection(section, course),
+        });
 
         isSelected = !isSelected;
     };

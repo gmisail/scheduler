@@ -1,10 +1,13 @@
 <script lang="ts">
-    import type { CatalogItem } from "../../model/catalog";
-    import { getColorForCrn } from "../../model/color";
-    import { DAY_LABEL, DAYS, extractTime } from "../../model/day";
+    import type { CatalogItem } from "../../lib/catalog";
+    import { getColorForCrn } from "../../lib/color";
+    import { DAY_LABEL, DAYS, extractTime } from "../../lib/day";
+    import { scheduleState } from "../../lib/store";
     import Event from "./Event.svelte";
 
-    const { catalog }: { catalog: CatalogItem[] } = $props();
+    // const { catalog }: { catalog: CatalogItem[] } = $props();
+
+    const catalog = [...scheduleState.get().schedule.courses.values()];
 
     let currentSchedule = $state(0);
     let numSchedules = $state(catalog.length);
@@ -17,8 +20,7 @@
         currentSchedule = Math.max(0, currentSchedule - 1);
     };
 
-    const entry = $derived(catalog[currentSchedule]);
-    const course = $derived(entry.course);
+    const course = $derived(catalog[currentSchedule] ?? { sections: [] });
     const sections = $derived(course.sections);
 </script>
 
@@ -52,29 +54,31 @@
             </div>
 
             {#each sections as section}
-                {#each section.blocks as block}
-                    {#if block.day == DAY}
-                        <Event
-                            title={course.title}
-                            startTime={extractTime(block.start_time)}
-                            endTime={extractTime(block.end_time)}
-                            color={getColorForCrn(block.crn)}
-                        >
-                            <div>
-                                {course.subject}
-                                {course.number}
-                            </div>
-                            <div>
-                                {section.crn}-{section.sec}
-                            </div>
-                            <div>{block.instructor}</div>
-                            <div>{block.building} {block.room}</div>
-                        </Event>
-                    {/if}
-                {/each}
+                {#if scheduleState.get().schedule.isSectionSelected(section)}
+                    {#each section.blocks as block}
+                        {#if block.day == DAY}
+                            <Event
+                                title={course.title}
+                                startTime={extractTime(block.start_time)}
+                                endTime={extractTime(block.end_time)}
+                                color={getColorForCrn(block.crn)}
+                            >
+                                <div>
+                                    {course.subject}
+                                    {course.number}
+                                </div>
+                                <div>
+                                    {section.crn}-{section.sec}
+                                </div>
+                                <div>{block.instructor}</div>
+                                <div>{block.building} {block.room}</div>
+                            </Event>
+                        {/if}
+                    {/each}
+                {/if}
             {/each}
 
-            <div class="bg-gray-100 dark:bg-gray-700">
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-md">
                 {#each { length: 16 }, i}
                     <div
                         class={{

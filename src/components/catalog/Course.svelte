@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { Block, Section } from "../../model/catalog";
+    import type { Block, Section } from "../../lib/catalog";
     import CourseSection from "./CourseSection.svelte";
 
     const { course } = $props();
@@ -29,7 +29,7 @@
     <div class="bg-gray-100 dark:bg-black/25">
         {#if isOpen}
             {#each course.sections as section, i}
-                <CourseSection {section} />
+                <CourseSection {section} {course} />
             {/each}
         {/if}
     </div>

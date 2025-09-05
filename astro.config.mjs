@@ -11,6 +11,7 @@ export default defineConfig({
   server: {
     allowedHosts: ["nixos.tail6de92.ts.net"],
   },
+  compressHTML: true,
   integrations: [svelte()],
   site: "https://gmisail.me",
   base: "/scheduler",

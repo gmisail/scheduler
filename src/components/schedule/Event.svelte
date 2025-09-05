@@ -9,7 +9,7 @@
 </script>
 
 <div
-    class="absolute text-sm overflow-y-auto w-full p-2 z-2"
+    class="absolute text-sm overflow-y-auto w-full p-2 z-2 rounded-md"
     style={`margin-top: ${position}px; height: ${height}px; background-color: ${color};`}
 >
     <div class="font-medium">{title}</div>
