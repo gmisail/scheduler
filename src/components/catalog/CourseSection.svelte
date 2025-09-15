@@ -1,39 +1,28 @@
 <script lang="ts">
-    import {
-        type Block,
-        type CourseData,
-        type Section,
-    } from "../../lib/catalog";
+    import { type Block, type Course, type Section } from "../../lib/catalog";
     import { DAY_LABEL, DAYS, formatTime } from "../../lib/day";
-    import { scheduleState } from "../../lib/store";
+    import superjson from "superjson";
+    import {
+        isSectionSelected,
+        scheduleState,
+        toggleSection,
+    } from "../../lib/store/schedule.svelte";
 
     type CourseSectionProps = {
         section: Section;
-        course: CourseData;
+        course: Course;
     };
 
     let { section, course }: CourseSectionProps = $props();
 
-    let isSelected = $state(
-        scheduleState.get().schedule.isSectionSelected(section),
-    );
-
-    const blocksByDay = $derived(
-        Object.fromEntries(
-            Object.entries(
-                Object.groupBy(section.blocks, (block) => block.day),
-            ).map(([day, blocks]) => [
-                day,
-                blocks?.sort((a, b) =>
-                    a.start_time.localeCompare(b.start_time),
-                ),
-            ]),
-        ),
-    );
+    let schedule = $derived(scheduleState.get().schedule);
+    let isSelected = $derived(isSectionSelected(schedule, section));
 
     const instructors = $derived([
         ...new Set(
-            section.blocks
+            section.days
+                .values()
+                .flatMap((blocks) => blocks)
                 .filter((block) => block.instructor != null)
                 .map((block: Block) => block.instructor),
         ),
@@ -41,18 +30,17 @@
 
     const buildings = $derived([
         ...new Set(
-            section.blocks
+            section.days
+                .values()
+                .flatMap((blocks) => blocks)
                 .filter((block) => block.building != null)
                 .map((block: Block) => block.building),
         ),
     ]);
 
     const toggleSelect = () => {
-        const currentState = scheduleState.get().schedule;
-
-        scheduleState.set({
-            schedule: currentState.toggleSection(section, course),
-        });
+        schedule = toggleSection(schedule, section, course);
+        scheduleState.set({ schedule });
 
         isSelected = !isSelected;
     };
@@ -83,22 +71,18 @@
         {/if}
     </div>
     <div class="text-left">
-        {#each DAYS as DAY}
+        {#each section.days.entries() as [day, blocks]}
             <div>
-                {#if DAY in blocksByDay}
-                    <span class="font-semibold">
-                        {DAY_LABEL.get(DAY) ?? ""}
-                    </span>
-                {/if}
+                <span class="font-semibold">
+                    {DAY_LABEL.get(day) ?? "N/A"}
+                </span>
 
                 <span class="space-x-2">
-                    {#each blocksByDay[DAY] ?? [] as block, i}
+                    {#each blocks as block, i}
                         <span>
                             {formatTime(block.start_time)} to {formatTime(
                                 block.end_time,
-                            )}{i != (blocksByDay[DAY] ?? []).length - 1
-                                ? ","
-                                : ""}
+                            )}{i != blocks.length - 1 ? "," : ""}
                         </span>
                     {/each}
                 </span>

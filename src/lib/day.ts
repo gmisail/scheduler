@@ -7,17 +7,13 @@ export const DAY_LABEL = new Map([
   ["F", "Fri."],
 ]);
 
-export function extractTime(dateTime: string): number {
-  const [hours, minutes] = dateTime.split(":");
-  const hourNum = parseInt(hours);
-  const minNum = parseInt(minutes);
-  return hourNum * 60 + minNum;
-}
+export function formatTime(minutes: number): string {
+  const hourNum = Math.floor(minutes / 60);
 
-export function formatTime(dateTime: string): string {
-  const [hours, minutes] = dateTime.split(":");
-  const hourNum = parseInt(hours);
+  const minNum = minutes % 60;
+  const minPadding = minNum < 10 ? "0" : "";
+
   const period = hourNum >= 12 ? "PM" : "AM";
   const hour12 = hourNum % 12 || 12;
-  return `${hour12}:${minutes} ${period}`;
+  return `${hour12}:${minNum}${minPadding} ${period}`;
 }

@@ -1,9 +1,15 @@
 ---
 import type { Department } from "../../lib/department";
-import type { CatalogItem, CourseData, Section } from "../../lib/catalog";
+import {
+    type CatalogItem,
+    type CourseItem,
+    type Course,
+    type Section,
+    timeToMinutes,
+} from "../../lib/catalog";
 
 import Layout from "../../layouts/Layout.astro";
-import Course from "../../components/catalog/Course.svelte";
+import CourseCard from "../../components/catalog/CourseCard.svelte";
 
 export async function getStaticPaths() {
     const response = await fetch(
@@ -25,16 +31,51 @@ export async function getStaticPaths() {
                 const course = item.course;
                 return course.subject == id;
             })
-            .map((item) => {
+            .map((item): Course => {
                 let course = item.course;
 
-                course.sections.sort((a: Section, b: Section) => {
-                    return a.crn - b.crn;
-                });
+                const sections = course.sections
+                    .map((section): Section => {
+                        const days = new Map(
+                            section.days.map((day) => {
+                                const blocks = day.blocks
+                                    .map((block) => {
+                                        return {
+                                            ...block,
+                                            start_time: timeToMinutes(
+                                                block.start_time,
+                                            ),
+                                            end_time: timeToMinutes(
+                                                block.end_time,
+                                            ),
+                                        };
+                                    })
+                                    .toSorted(
+                                        (a, b) => a.start_time - b.start_time,
+                                    );
 
-                return item.course;
+                                return [day.day, blocks];
+                            }),
+                        );
+
+                        return {
+                            id: section.id,
+                            course_id: course.id,
+                            crn: section.crn,
+                            sec: section.sec,
+                            days,
+                        };
+                    })
+                    .toSorted((a: Section, b: Section) => {
+                        return a.crn - b.crn;
+                    });
+
+                return {
+                    ...course,
+                    sections,
+                };
             })
-            .toSorted((a: CourseData, b: CourseData) => {
+            .toSorted((a: Course, b: Course) => {
                 return a.number.localeCompare(b.number);
             });
 
@@ -55,7 +96,9 @@ const { name, courses } = Astro.props;
     <div class="space-y-2">
         {
             courses.length > 0 ? (
-                courses.map((course) => <Course client:load course={course} />)
+                courses.map((course) => (
+                    <CourseCard client:load course={course} />
+                ))
             ) : (
                 <div class="dark:text-white">
                     Could not find any courses for this department.

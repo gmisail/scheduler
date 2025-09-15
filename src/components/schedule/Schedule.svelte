@@ -1,16 +1,41 @@
 <script lang="ts">
-    import type { CatalogItem } from "../../lib/catalog";
+    import {
+        generateSchedules,
+        type CatalogItem,
+        type Section,
+    } from "../../lib/catalog";
     import { getColorForCrn } from "../../lib/color";
-    import { DAY_LABEL, DAYS, extractTime } from "../../lib/day";
-    import { scheduleState } from "../../lib/store";
+    import { DAY_LABEL, DAYS } from "../../lib/day";
+    import {
+        isSectionSelected,
+        scheduleState,
+    } from "../../lib/store/schedule.svelte";
     import Event from "./Event.svelte";
 
-    // const { catalog }: { catalog: CatalogItem[] } = $props();
+    const schedule = $derived(scheduleState.get().schedule);
 
-    const catalog = [...scheduleState.get().schedule.courses.values()];
+    const courses = $derived(schedule.courses.values().toArray());
+    const courseMap = $derived(
+        new Map(courses.map((course) => [course.id, course])),
+    );
+
+    const schedules = $derived.by(() => {
+        let res: Section[][] = [];
+
+        const filteredCourses = courses.map((course) => {
+            const sections = course.sections.filter((section) => {
+                return schedule.selected.has(section.id);
+            });
+
+            return { ...course, sections };
+        });
+
+        generateSchedules(filteredCourses, 0, [], res);
+        return res;
+    });
 
     let currentSchedule = $state(0);
-    let numSchedules = $state(catalog.length);
+    const numSchedules = $derived(schedules.length);
 
     const nextSchedule = () => {
         currentSchedule = Math.min(currentSchedule + 1, numSchedules - 1);
@@ -20,8 +45,9 @@
         currentSchedule = Math.max(0, currentSchedule - 1);
     };
 
-    const course = $derived(catalog[currentSchedule] ?? { sections: [] });
-    const sections = $derived(course.sections);
+    const sections = $derived(
+        numSchedules > 0 ? (schedules[currentSchedule] ?? []) : [],
+    );
 </script>
 
 <div class="mb-4 flex items-center justify-between">
@@ -54,26 +80,24 @@
             </div>
 
             {#each sections as section}
-                {#if scheduleState.get().schedule.isSectionSelected(section)}
-                    {#each section.blocks as block}
-                        {#if block.day == DAY}
-                            <Event
-                                title={course.title}
-                                startTime={extractTime(block.start_time)}
-                                endTime={extractTime(block.end_time)}
-                                color={getColorForCrn(block.crn)}
-                            >
-                                <div>
-                                    {course.subject}
-                                    {course.number}
-                                </div>
-                                <div>
-                                    {section.crn}-{section.sec}
-                                </div>
-                                <div>{block.instructor}</div>
-                                <div>{block.building} {block.room}</div>
-                            </Event>
-                        {/if}
+                {#if isSectionSelected(schedule, section)}
+                    {#each section.days.get(DAY) ?? [] as block}
+                        <Event
+                            title={courseMap.get(section.course_id)?.title}
+                            startTime={block.start_time}
+                            endTime={block.end_time}
+                            color={getColorForCrn(block.crn)}
+                        >
+                            <div>
+                                {courseMap.get(section.course_id)?.subject}
+                                {courseMap.get(section.course_id)?.number}
+                            </div>
+                            <div>
+                                {section.crn}-{section.sec}
+                            </div>
+                            <div>{block.instructor}</div>
+                            <div>{block.building} {block.room}</div>
+                        </Event>
                     {/each}
                 {/if}
             {/each}

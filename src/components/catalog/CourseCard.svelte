@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { Block, Section } from "../../lib/catalog";
     import CourseSection from "./CourseSection.svelte";
+    import superjson from "superjson";
 
     const { course } = $props();
 

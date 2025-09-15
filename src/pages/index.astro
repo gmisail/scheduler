@@ -1,28 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Schedule from "../components/schedule/Schedule.svelte";
-import type { CatalogItem, Section, CourseData } from "../lib/catalog";
-
-const catalogRes = await fetch(
-    "https://pub-64d1712225e343d78b0dbf7c06803c3a.r2.dev/uvm/2025-09/catalog.json",
-);
-const catalog = (await catalogRes.json()) as CatalogItem[];
-
-const courses = catalog
-    .map((item) => {
-        let course = item.course;
-
-        course.sections.sort((a: Section, b: Section) => {
-            return a.crn - b.crn;
-        });
-
-        return item.course;
-    })
-    .toSorted((a: CourseData, b: CourseData) => {
-        return a.number.localeCompare(b.number);
-    });
 ---
 
 <Layout>
-    <Schedule client:load {catalog} />
+    <Schedule client:load />
 </Layout>
