@@ -11,9 +11,10 @@
     type CourseSectionProps = {
         section: Section;
         course: Course;
+        isLast: boolean;
     };
 
-    let { section, course }: CourseSectionProps = $props();
+    let { section, course, isLast = false }: CourseSectionProps = $props();
 
     let schedule = $derived(scheduleState.get().schedule);
     let isSelected = $derived(isSectionSelected(schedule, section));
@@ -52,6 +53,7 @@
         "bg-blue-200 hover:bg-blue-200/50 dark:bg-blue-200/70 dark:hover:bg-blue-200/80 dark:text-black":
             isSelected,
         "hover:bg-black/5 dark:hover:bg-black/15 dark:text-white": !isSelected,
+        "rounded-b-sm": isLast,
     }}
     onclick={toggleSelect}
 >

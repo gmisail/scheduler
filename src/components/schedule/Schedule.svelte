@@ -1,5 +1,12 @@
 <script lang="ts">
     import {
+        ArrowBigLeft,
+        ArrowBigRightDashIcon,
+        ArrowRight,
+        ChevronLeft,
+        ChevronRight,
+    } from "@lucide/svelte";
+    import {
         generateSchedules,
         type CatalogItem,
         type Section,
@@ -35,7 +42,15 @@
     });
 
     let currentSchedule = $state(0);
-    const numSchedules = $derived(schedules.length);
+    const numSchedules = $derived(
+        schedules.filter((schedule) => schedule.length > 0).length,
+    );
+
+    const crns = $derived(
+        schedules[currentSchedule]
+            ?.map((section) => section.crn)
+            .toSorted((a, b) => a - b),
+    );
 
     const nextSchedule = () => {
         currentSchedule = Math.min(currentSchedule + 1, numSchedules - 1);
@@ -48,14 +63,27 @@
     const sections = $derived(
         numSchedules > 0 ? (schedules[currentSchedule] ?? []) : [],
     );
+
+    const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key == "ArrowLeft") {
+            prevSchedule();
+        } else if (e.key == "ArrowRight") {
+            nextSchedule();
+        }
+    };
 </script>
+
+<svelte:window on:keydown|preventDefault={onKeyDown} />
 
 <div class="mb-4 flex items-center justify-between">
     <button
-        class={"w-20 selected:bg-blue-200 dark:text-white dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-2"}
+        class={{
+            "rounded-md disabled:opacity-50 selected:bg-blue-200 dark:text-white dark:bg-black/10 hover:bg-black/5 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-2": true,
+        }}
+        disabled={currentSchedule === 0 || numSchedules === 0}
         onclick={prevSchedule}
     >
-        {"<"}
+        <ChevronLeft />
     </button>
     <div class="dark:text-white">
         {#if numSchedules > 0}
@@ -65,10 +93,11 @@
         {/if}
     </div>
     <button
-        class={"w-20 dark:text-white dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-2"}
+        class={"rounded-md disabled:opacity-50 dark:text-white dark:bg-black/10 hover:bg-black/5 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-2"}
         onclick={nextSchedule}
+        disabled={currentSchedule === numSchedules - 1 || numSchedules === 0}
     >
-        {">"}
+        <ChevronRight />
     </button>
 </div>
 
@@ -83,7 +112,8 @@
                 {#if isSectionSelected(schedule, section)}
                     {#each section.days.get(DAY) ?? [] as block}
                         <Event
-                            title={courseMap.get(section.course_id)?.title}
+                            title={courseMap.get(section.course_id)?.title ??
+                                `id: ${section.course_id}`}
                             startTime={block.start_time}
                             endTime={block.end_time}
                             color={getColorForCrn(block.crn)}
@@ -113,5 +143,16 @@
                 {/each}
             </div>
         </div>
+    {/each}
+</div>
+
+<div class="space-x-2">
+    {#each crns as crn}
+        <span
+            class="rounded-sm p-2"
+            style={`background-color: ${getColorForCrn(crn)};`}
+        >
+            {crn}
+        </span>
     {/each}
 </div>

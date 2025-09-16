@@ -14,7 +14,10 @@
 
 <div class="mb-2">
     <button
-        class={"w-full text-left dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-4"}
+        class={{
+            "w-full rounded-sm text-left dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-4": true,
+            "rounded-b-none": isOpen,
+        }}
         onclick={toggle}
     >
         <b class="mr-2 dark:text-white">
@@ -27,10 +30,14 @@
         </p>
     </button>
 
-    <div class="bg-gray-100 dark:bg-black/25">
+    <div class="rounded-b-sm bg-gray-100 dark:bg-black/25">
         {#if isOpen}
             {#each course.sections as section, i}
-                <CourseSection {section} {course} />
+                <CourseSection
+                    {section}
+                    {course}
+                    isLast={i === course.sections.length - 1}
+                />
             {/each}
         {/if}
     </div>

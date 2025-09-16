@@ -16,7 +16,7 @@ const data = (await response.json()) as Department[];
         {
             data.map((department) => (
                 <a href={"/scheduler/catalog/" + department.id.toUpperCase()}>
-                    <div class="p-4 dark:text-white dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600">
+                    <div class="p-4 rounded-sm dark:text-white dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600">
                         <b class="mr-2">{department.id}</b>
                         <span>{department.name}</span>
                     </div>
