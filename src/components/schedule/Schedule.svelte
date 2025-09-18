@@ -9,10 +9,10 @@
     import { isSectionSelected, scheduleState } from "@lib/store/schedule";
     import Event from "./Event.svelte";
     import ScheduleBar from "./ScheduleBar.svelte";
+    import { onMount } from "svelte";
 
     const schedule = $derived(scheduleState.get().schedule);
-
-    const courses = $derived(schedule.courses.values().toArray());
+    const courses = $derived([...schedule.courses.values()]);
     const courseMap = $derived(
         new Map(courses.map((course) => [course.id, course])),
     );
