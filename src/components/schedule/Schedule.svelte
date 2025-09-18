@@ -85,7 +85,7 @@
     >
         <ChevronLeft />
     </button>
-    <div class="dark:text-white">
+    <div class="dark:text-white font-semibold">
         {#if numSchedules > 0}
             {currentSchedule + 1} / {numSchedules}
         {:else}
