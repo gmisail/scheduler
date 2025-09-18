@@ -1,12 +1,12 @@
 <script lang="ts">
-    import { type Block, type Course, type Section } from "../../lib/catalog";
-    import { DAY_LABEL, DAYS, formatTime } from "../../lib/day";
+    import { type Block, type Course, type Section } from "@lib/catalog";
+    import { DAY_LABEL, DAYS, formatTime } from "@lib/day";
     import superjson from "superjson";
     import {
         isSectionSelected,
         scheduleState,
         toggleSection,
-    } from "../../lib/store/schedule.svelte";
+    } from "@lib/store/schedule";
 
     type CourseSectionProps = {
         section: Section;

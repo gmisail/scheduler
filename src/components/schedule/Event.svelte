@@ -4,15 +4,17 @@
 
     const { title, startTime, endTime, color, children } = $props();
 
-    const position = startTime - Y_OFFSET;
-    const height = endTime - startTime;
+    const position = $derived(startTime - Y_OFFSET);
+    const height = $derived(endTime - startTime);
 </script>
 
 <div
     class="absolute text-sm overflow-y-auto w-full p-2 z-2 rounded-md"
     style={`margin-top: ${position}px; height: ${height}px; background-color: ${color};`}
 >
-    <div class="font-bold">{title}</div>
+    <div class="font-bold">
+        {title}
+    </div>
     <div>
         {@render children()}
     </div>

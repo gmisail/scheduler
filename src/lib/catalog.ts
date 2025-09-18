@@ -73,17 +73,14 @@ export function generateSchedules(
   current: Section[],
   results: Section[][],
 ) {
-  // Base case: if we've processed all courses, add the current schedule to results
   if (index === courses.length) {
     results.push([...current]);
     return;
   }
 
-  // Recursive case: try each section of the current course
   for (const section of courses[index].sections) {
     let conflict = false;
 
-    // Check for conflicts with already selected sections
     for (const selected of current) {
       if (sectionsOverlap(selected, section)) {
         conflict = true;
@@ -91,26 +88,12 @@ export function generateSchedules(
       }
     }
 
-    // If no conflicts, add this section and recurse
     if (!conflict) {
       current.push(section);
       generateSchedules(courses, index + 1, current, results);
-      current.pop(); // Backtrack
+      current.pop();
     }
   }
-}
-
-export function blocksOverlap(block1: Block, block2: Block): boolean {
-  if (block1.day !== block2.day) {
-    return false;
-  }
-
-  const start1 = block1.start_time;
-  const end1 = block1.end_time;
-  const start2 = block2.start_time;
-  const end2 = block2.end_time;
-
-  return start1 < end2 && start2 < end1;
 }
 
 export function sectionsOverlap(a: Section, b: Section): boolean {
@@ -118,22 +101,39 @@ export function sectionsOverlap(a: Section, b: Section): boolean {
     return true;
   }
 
-  const byDay = (item: BlocksByDay) => item.day;
+  const aBlocks = a.days
+    .values()
+    .flatMap((blocks) => blocks)
+    .toArray();
 
-  for (const day in a.days) {
-    const aDayGroups = a.days.get(day);
-    const bDayGroups = b.days.get(day);
+  const bBlocks = b.days
+    .values()
+    .flatMap((blocks) => blocks)
+    .toArray();
 
-    if (aDayGroups && bDayGroups) {
-      for (const blockA of aDayGroups) {
-        for (const blockB of bDayGroups) {
-          if (blocksOverlap(blockA, blockB)) {
-            return true;
-          }
-        }
+  for (const aBlock of aBlocks) {
+    for (const bBlock of bBlocks) {
+      if (blocksOverlap(aBlock, bBlock)) {
+        return true;
       }
     }
   }
 
   return false;
+}
+
+export function blocksOverlap(a: Block, b: Block): boolean {
+  if (a.day !== b.day) {
+    return false;
+  }
+
+  if (b.start_time >= a.end_time) {
+    return false;
+  }
+
+  if (a.start_time >= b.end_time) {
+    return false;
+  }
+
+  return true;
 }
