@@ -8,8 +8,6 @@ export const DAY_LABEL = new Map([
 ]);
 
 export function formatTime(minutes: number): string {
-  console.log("minutes: ", minutes);
-
   const hourNum = Math.floor(minutes / 60);
 
   const minNum = minutes % 60;
