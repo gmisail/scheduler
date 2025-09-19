@@ -66,7 +66,7 @@
 
 <ScheduleBar bind:currentSchedule {numSchedules} />
 
-<div class="grid gap-4 mb-4 grid-cols-[5%_1fr] items-end">
+<div class="grid gap-4 mb-6 grid-cols-[5%_1fr] items-end">
     <div>
         {#each { length: 16 }, i}
             <div class="relative h-[60px]">
