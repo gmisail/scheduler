@@ -1,30 +1,23 @@
 <script lang="ts">
     import { type Block, type Course, type Section } from "@lib/catalog";
     import type { Term } from "@lib/term";
-    import { DAY_LABEL, DAYS, formatTime } from "@lib/day";
-    import superjson from "superjson";
-    import {
-        getScheduleState,
-        isSectionSelected,
-        toggleSection,
-    } from "@lib/store/schedule";
+    import { DAY_LABEL, formatTime } from "@lib/day";
 
     type CourseSectionProps = {
         term: Term;
         section: Section;
         course: Course;
         isLast: boolean;
+        isSelected: boolean;
+        onToggle: (section: Section) => void;
     };
 
     let {
-        term,
         section,
-        course,
         isLast = false,
+        isSelected = false,
+        onToggle = (section: Section) => {},
     }: CourseSectionProps = $props();
-
-    let schedule = $derived(getScheduleState(term.id).get().schedule);
-    let isSelected = $derived(isSectionSelected(schedule, section));
 
     const instructors = $derived([
         ...new Set(
@@ -46,12 +39,9 @@
         ),
     ]);
 
-    const toggleSelect = () => {
-        schedule = toggleSection(schedule, section, course);
-        getScheduleState(term.id).set({ schedule });
-
-        isSelected = !isSelected;
-    };
+    function onClick() {
+        onToggle(section);
+    }
 </script>
 
 <button
@@ -62,7 +52,7 @@
         "hover:bg-black/5 dark:hover:bg-black/15 dark:text-white": !isSelected,
         "rounded-b-sm": isLast,
     }}
-    onclick={toggleSelect}
+    onclick={onClick}
 >
     <div class="space-x-4">
         <span class="font-semibold">

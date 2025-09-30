@@ -12,10 +12,8 @@
   "dependencies": {
     "@astrojs/svelte": "^7.1.0",
     "@lucide/svelte": "^0.544.0",
-    "@nanostores/persistent": "^1.1.0",
     "@tailwindcss/vite": "^4.1.12",
     "astro": "^5.13.4",
-    "nanostores": "^1.0.1",
     "superjson": "^2.2.2",
     "svelte": "^5.38.6",
     "tailwindcss": "^4.1.12",

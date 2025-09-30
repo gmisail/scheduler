@@ -1,18 +1,14 @@
 <script lang="ts">
-    import {
-        generateSchedules,
-        type CatalogItem,
-        type Section,
-    } from "@lib/catalog";
+    import { generateSchedules, type Section } from "@lib/catalog";
     import { getColorForCrn } from "@lib/color";
     import { DAY_LABEL, DAYS } from "@lib/day";
-    import { isSectionSelected, getScheduleState } from "@lib/store/schedule";
+    import { isSectionSelected, getTermState } from "@lib/store/schedule";
     import Event from "./Event.svelte";
     import ScheduleBar from "./ScheduleBar.svelte";
 
     const { term } = $props();
 
-    const schedule = $derived(getScheduleState(term.id).get().schedule);
+    const schedule = getTermState(term);
     const courses = $derived([...schedule.courses.values()]);
     const courseMap = $derived(
         new Map(courses.map((course) => [course.id, course])),
