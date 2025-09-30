@@ -1,0 +1,22 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ScheduleView from "../../components/schedule/Schedule.svelte";
+
+import { fetchCatalog, fetchDepartments, fetchTerms } from "@lib/api";
+import type { Term } from "@lib/term";
+
+export async function getStaticPaths() {
+    const terms: Term[] = await fetchTerms();
+
+    return terms.map((term) => ({
+        params: { term: term.id },
+        props: { term },
+    }));
+}
+
+const { term } = Astro.props;
+---
+
+<Layout term={term}>
+    <ScheduleView client:only="svelte" term={term} />
+</Layout>

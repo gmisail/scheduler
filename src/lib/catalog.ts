@@ -137,3 +137,40 @@ export function blocksOverlap(a: Block, b: Block): boolean {
 
   return true;
 }
+
+export function ingestCourseItem(course: CourseItem): Course {
+  const sections = course.sections
+    .map((section): Section => {
+      const days = new Map(
+        section.days.map((day) => {
+          const blocks = day.blocks
+            .map((block) => {
+              return {
+                ...block,
+                start_time: timeToMinutes(block.start_time),
+                end_time: timeToMinutes(block.end_time),
+              };
+            })
+            .toSorted((a, b) => a.start_time - b.start_time);
+
+          return [day.day, blocks];
+        }),
+      );
+
+      return {
+        id: section.id,
+        course_id: course.id,
+        crn: section.crn,
+        sec: section.sec,
+        days,
+      };
+    })
+    .toSorted((a: Section, b: Section) => {
+      return a.crn - b.crn;
+    });
+
+  return {
+    ...course,
+    sections,
+  };
+}

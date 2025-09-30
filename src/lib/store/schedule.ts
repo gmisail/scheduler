@@ -56,22 +56,23 @@ export function isSectionSelected(
   return state.selected.has(section.id);
 }
 
-export const scheduleState = persistentMap<ScheduleStore>(
-  "schedule",
-  {
-    schedule: {
-      selected: new Set(),
-      courses: new Map(),
-      numCourses: new Map(),
+export function getScheduleState(id: string) {
+  return persistentMap<ScheduleStore>(
+    id + "#",
+    {
+      schedule: {
+        selected: new Set(),
+        courses: new Map(),
+        numCourses: new Map(),
+      },
     },
-  },
-  {
-    encode(schedule) {
-      return superjson.stringify(schedule);
+    {
+      encode(schedule) {
+        return superjson.stringify(schedule);
+      },
+      decode(schedule) {
+        return superjson.parse<ScheduleState>(schedule);
+      },
     },
-    decode(schedule) {
-      return superjson.parse<ScheduleState>(schedule);
-      // return new ScheduleState().decode(schedule);
-    },
-  },
-);
+  );
+}

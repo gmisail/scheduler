@@ -1,0 +1,76 @@
+---
+import {
+    type CatalogItem,
+    type Course,
+    ingestCourseItem,
+    type Section,
+    timeToMinutes,
+} from "@lib/catalog";
+import { fetchCatalog, fetchDepartments, fetchTerms } from "@lib/api";
+
+import Layout from "../../../layouts/Layout.astro";
+import CourseCard from "../../../components/catalog/CourseCard.svelte";
+import type { Term } from "@lib/term";
+
+export async function getStaticPaths() {
+    const terms: Term[] = await fetchTerms();
+    const departments = await fetchDepartments();
+
+    let routes = [];
+
+    for (const term of terms) {
+        let catalog: CatalogItem[] = [];
+
+        try {
+            catalog = await fetchCatalog(term.id);
+        } catch (e) {
+            continue;
+        }
+
+        for (const department of departments) {
+            const id = department.id.toUpperCase();
+            const name = department.name;
+
+            const courses = catalog
+                .filter((item) => {
+                    const course = item.course;
+                    return course.subject == id;
+                })
+                .map((item): Course => {
+                    let course = item.course;
+                    return ingestCourseItem(course);
+                })
+                .toSorted((a: Course, b: Course) => {
+                    return a.number.localeCompare(b.number);
+                });
+
+            routes.push({
+                params: { id, term: term.id },
+                props: { name, courses, term },
+            });
+        }
+    }
+
+    return routes;
+}
+
+const { name, courses, term } = Astro.props;
+---
+
+<Layout term={term}>
+    <h2 class="dark:text-white text-xl font-semibold mb-4">{name}</h2>
+
+    <div class="space-y-2">
+        {
+            courses.length > 0 ? (
+                courses.map((course) => (
+                    <CourseCard client:load term={term} course={course} />
+                ))
+            ) : (
+                <div class="dark:text-white">
+                    Could not find any courses for this department.
+                </div>
+            )
+        }
+    </div>
+</Layout>

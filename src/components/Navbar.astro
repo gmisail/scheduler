@@ -1,16 +1,31 @@
+---
+const { term } = Astro.props;
+
+const baseUrl = "/scheduler/" + term?.id;
+---
+
 <header
     class="flex justify-between items-center p-2 bg-[#154734] text-white dark:bg-gray-900"
 >
-    <div>
-        <a href="/scheduler" class="p-2 rounded-sm hover:bg-black/10">
+    <div class="flex gap-2">
+        <a
+            href={baseUrl + "/schedule"}
+            class="p-2 rounded-sm hover:bg-black/10"
+        >
             <span class="font-bold">University of Vermont</span>
         </a>
+        <div class="p-2 rounded-sm font-semibold">
+            <span>{term?.label}</span>
+        </div>
     </div>
     <div class="flex gap-2">
-        <a href="/scheduler/" class="p-2 rounded-sm hover:bg-black/10">
+        <a
+            href={baseUrl + "/schedule"}
+            class="p-2 rounded-sm hover:bg-black/10"
+        >
             <span>Schedule</span>
         </a>
-        <a href="/scheduler/catalog" class="p-2 rounded-sm hover:bg-black/10">
+        <a href={baseUrl} class="p-2 rounded-sm hover:bg-black/10">
             <span>Catalog</span>
         </a>
     </div>

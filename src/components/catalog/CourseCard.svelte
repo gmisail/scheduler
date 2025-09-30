@@ -1,9 +1,8 @@
 <script lang="ts">
-    import type { Block, Section } from "@lib/catalog";
     import CourseSection from "./CourseSection.svelte";
     import superjson from "superjson";
 
-    const { course } = $props();
+    const { term, course } = $props();
 
     let isOpen = $state(false);
 
@@ -34,6 +33,7 @@
         {#if isOpen}
             {#each course.sections as section, i}
                 <CourseSection
+                    {term}
                     {section}
                     {course}
                     isLast={i === course.sections.length - 1}

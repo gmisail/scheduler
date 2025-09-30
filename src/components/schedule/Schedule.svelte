@@ -6,11 +6,13 @@
     } from "@lib/catalog";
     import { getColorForCrn } from "@lib/color";
     import { DAY_LABEL, DAYS } from "@lib/day";
-    import { isSectionSelected, scheduleState } from "@lib/store/schedule";
+    import { isSectionSelected, getScheduleState } from "@lib/store/schedule";
     import Event from "./Event.svelte";
     import ScheduleBar from "./ScheduleBar.svelte";
 
-    const schedule = $derived(scheduleState.get().schedule);
+    const { term } = $props();
+
+    const schedule = $derived(getScheduleState(term.id).get().schedule);
     const courses = $derived([...schedule.courses.values()]);
     const courseMap = $derived(
         new Map(courses.map((course) => [course.id, course])),

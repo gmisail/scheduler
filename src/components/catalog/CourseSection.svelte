@@ -1,22 +1,29 @@
 <script lang="ts">
     import { type Block, type Course, type Section } from "@lib/catalog";
+    import type { Term } from "@lib/term";
     import { DAY_LABEL, DAYS, formatTime } from "@lib/day";
     import superjson from "superjson";
     import {
+        getScheduleState,
         isSectionSelected,
-        scheduleState,
         toggleSection,
     } from "@lib/store/schedule";
 
     type CourseSectionProps = {
+        term: Term;
         section: Section;
         course: Course;
         isLast: boolean;
     };
 
-    let { section, course, isLast = false }: CourseSectionProps = $props();
+    let {
+        term,
+        section,
+        course,
+        isLast = false,
+    }: CourseSectionProps = $props();
 
-    let schedule = $derived(scheduleState.get().schedule);
+    let schedule = $derived(getScheduleState(term.id).get().schedule);
     let isSelected = $derived(isSectionSelected(schedule, section));
 
     const instructors = $derived([
@@ -41,7 +48,7 @@
 
     const toggleSelect = () => {
         schedule = toggleSection(schedule, section, course);
-        scheduleState.set({ schedule });
+        getScheduleState(term.id).set({ schedule });
 
         isSelected = !isSelected;
     };
