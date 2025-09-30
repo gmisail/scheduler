@@ -10,16 +10,16 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@astrojs/svelte": "^7.1.0",
     "@lucide/svelte": "^0.544.0",
-    "@tailwindcss/vite": "^4.1.12",
-    "astro": "^5.13.4",
     "superjson": "^2.2.2",
-    "svelte": "^5.38.6",
-    "tailwindcss": "^4.1.12",
-    "typescript": "^5.9.2"
+    "svelte": "^5.38.6"
   },
   "devDependencies": {
+    "astro": "^5.13.4",
+    "@astrojs/svelte": "^7.1.0",
+    "@tailwindcss/vite": "^4.1.12",
+    "tailwindcss": "^4.1.12",
+    "typescript": "^5.9.2",
     "vitest": "^3.2.4"
   }
 }

@@ -8,13 +8,13 @@ const latestUrl = `/scheduler/${term?.id}/schedule`;
 ---
 
 <head>
-    <!-- {
+    {
         term && term?.id !== "" ? (
             <meta http-equiv="refresh" content={`0; url=${latestUrl}`} />
         ) : (
             <title>Uh oh.</title>
         )
-    } -->
+    }
 </head>
 
 <Layout term={term}>
