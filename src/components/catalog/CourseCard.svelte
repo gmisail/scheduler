@@ -1,18 +1,25 @@
 <script lang="ts">
     import { onMount } from "svelte";
     import CourseSection from "./CourseSection.svelte";
-    import type { Section } from "@lib/catalog";
+    import type { Course, Section } from "@lib/catalog";
     import {
         getTermState,
         isSectionSelected,
         toggleSection,
         type ScheduleState,
     } from "@lib/store/schedule";
+    import type { Term } from "@lib/term";
 
-    const { term, course } = $props();
+    const { term, course }: { term: Term; course: Course } = $props();
 
     let isOpen = $state(false);
     let schedule = $state<ScheduleState | undefined>(undefined);
+
+    const anySelected = $derived(
+        course.sections.some((section) => {
+            return schedule?.selected.has(section.id);
+        }),
+    );
 
     function toggleCard() {
         isOpen = !isOpen;
@@ -31,7 +38,13 @@
     });
 </script>
 
-<div class="mb-2">
+<div
+    class={{
+        "mb-4": true,
+        "rounded-sm outline-2 outline-blue-200 hover:outline-blue-200/50 dark:outline-blue-200/70 dark:hover:outline-blue-200/80 ":
+            anySelected,
+    }}
+>
     <button
         class={{
             "w-full rounded-sm text-left dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600 p-4": true,

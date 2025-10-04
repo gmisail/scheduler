@@ -3,6 +3,7 @@ import type { Term } from "@lib/term";
 import { fetchDepartments, fetchTerms } from "@lib/api";
 
 import Layout from "../../layouts/Layout.astro";
+import DepartmentList from "../../components/department/DepartmentList.svelte";
 
 export async function getStaticPaths() {
     const terms: Term[] = await fetchTerms();
@@ -21,22 +22,6 @@ const departments = await fetchDepartments();
     <h2 class="dark:text-white text-xl font-semibold mb-4">Departments</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {
-            departments.map((department) => (
-                <a
-                    href={
-                        "/scheduler/" +
-                        term.id +
-                        "/subject/" +
-                        department.id.toUpperCase()
-                    }
-                >
-                    <div class="p-4 rounded-sm dark:text-white dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600">
-                        <b class="mr-2">{department.id}</b>
-                        <span>{department.name}</span>
-                    </div>
-                </a>
-            ))
-        }
+        <DepartmentList client:load {departments} {term} />
     </div>
 </Layout>
