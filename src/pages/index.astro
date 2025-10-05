@@ -3,24 +3,33 @@ import { fetchTerms } from "@lib/api";
 import Layout from "../layouts/Layout.astro";
 
 const terms = await fetchTerms();
-const term = terms?.length > 0 ? terms[0] : undefined;
-const latestUrl = `/scheduler/${term?.id}/schedule`;
+
+const today = new Date();
+const month = (today.getMonth() <= 9 ? "0" : "") + today.getMonth();
+const currentId = `${today.getFullYear()}${month}`;
+
+const futureTerms = terms
+    .filter((term) => term.id > currentId)
+    .toSorted((a, b) => a.id.localeCompare(b.id));
+
+const nextTerm = futureTerms?.[0] ?? terms[0];
+const url = `/scheduler/${nextTerm?.id}/schedule`;
 ---
 
 <head>
     {
-        term && term?.id !== "" ? (
-            <meta http-equiv="refresh" content={`0; url=${latestUrl}`} />
+        nextTerm && nextTerm?.id !== "" ? (
+            <meta http-equiv="refresh" content={`0; url=${url}`} />
         ) : (
             <title>Uh oh.</title>
         )
     }
 </head>
 
-<Layout term={term}>
+<Layout terms={terms} term={nextTerm}>
     <p class="dark:text-white">
         Please wait while you are redirected to the latest term.
 
-        <a class="font-bold" href={latestUrl}>Click here</a> if you are not redirected.
+        <a class="font-bold" href={url}>Click here</a> if you are not redirected.
     </p>
 </Layout>
