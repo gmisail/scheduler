@@ -10,15 +10,15 @@ export async function getStaticPaths() {
 
     return terms.map((term) => ({
         params: { term: term.id },
-        props: { term },
+        props: { terms, term },
     }));
 }
 
-const { term } = Astro.props;
+const { terms, term } = Astro.props;
 const departments = await fetchDepartments();
 ---
 
-<Layout term={term}>
+<Layout terms={terms} term={term}>
     <h2 class="dark:text-white text-xl font-semibold mb-4">Departments</h2>
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

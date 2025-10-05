@@ -1,7 +1,9 @@
 ---
-const { term } = Astro.props;
+import Switcher from "@components/navbar/Switcher.svelte";
 
-const baseUrl = "/scheduler/" + term?.id;
+const { term: currentTerm, terms } = Astro.props;
+
+const baseUrl = "/scheduler/" + currentTerm?.id;
 ---
 
 <header
@@ -14,9 +16,8 @@ const baseUrl = "/scheduler/" + term?.id;
         >
             <span class="font-bold">University of Vermont</span>
         </a>
-        <div class="p-2 rounded-sm font-semibold">
-            <span>{term?.label}</span>
-        </div>
+
+        <Switcher client:load terms={terms} term={currentTerm} />
     </div>
     <div class="flex gap-2">
         <a

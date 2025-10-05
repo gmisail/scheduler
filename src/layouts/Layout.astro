@@ -2,7 +2,7 @@
 import Navbar from "../components/Navbar.astro";
 import "../styles/global.css";
 
-const { term } = Astro.props;
+const { terms, term } = Astro.props;
 ---
 
 <!doctype html>
@@ -29,7 +29,7 @@ const { term } = Astro.props;
         <title>Scheduler</title>
     </head>
     <body class="dark:bg-gray-800">
-        <Navbar term={term} />
+        <Navbar terms={terms} term={term} />
         <main class="container mx-auto py-6">
             <slot />
         </main>

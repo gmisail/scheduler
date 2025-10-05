@@ -46,7 +46,7 @@ export async function getStaticPaths() {
 
             routes.push({
                 params: { id, term: term.id },
-                props: { name, courses, term },
+                props: { name, courses, term, terms },
             });
         }
     }
@@ -54,10 +54,10 @@ export async function getStaticPaths() {
     return routes;
 }
 
-const { name, courses, term } = Astro.props;
+const { name, courses, term, terms } = Astro.props;
 ---
 
-<Layout term={term}>
+<Layout term={term} terms={terms}>
     <h2 class="dark:text-white text-xl font-semibold mb-4">{name}</h2>
 
     <div class="space-y-2">
