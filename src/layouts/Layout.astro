@@ -4,8 +4,7 @@ import Navbar from "../components/Navbar.astro";
 import "../styles/global.css";
 
 let { terms, term } = Astro.props;
-
-terms = terms.filter((t: Term) => t.id > "202506");
+terms = terms?.filter((t: Term) => t.id > "202506");
 ---
 
 <!doctype html>
@@ -36,5 +35,11 @@ terms = terms.filter((t: Term) => t.id > "202506");
         <main class="container mx-auto py-6">
             <slot />
         </main>
+        <footer class="text-center my-2 dark:text-white">
+            <a
+                class="hover:underline"
+                href="https://github.com/gmisail/scheduler">Source</a
+            >
+        </footer>
     </body>
 </html>

@@ -13,20 +13,28 @@ const baseUrl = "/" + currentTerm?.id;
             href={baseUrl + "/schedule"}
             class="p-2 rounded-sm hover:bg-black/10"
         >
-            <span class="font-bold">University of Vermont</span>
+            <span class="font-bold">Moose Scheduler</span>
         </a>
 
-        <Switcher client:load terms={terms} term={currentTerm} />
+        {
+          terms ? (
+            <Switcher client:load terms={terms} term={currentTerm} />
+          ) : <></>
+        }
     </div>
     <div class="flex gap-2">
-        <a
-            href={baseUrl + "/schedule"}
-            class="p-2 rounded-sm hover:bg-black/10"
-        >
-            <span>Schedule</span>
-        </a>
-        <a href={baseUrl} class="p-2 rounded-sm hover:bg-black/10">
-            <span>Catalog</span>
-        </a>
+        {
+          currentTerm ? (
+            <a
+                href={baseUrl + "/schedule"}
+                class="p-2 rounded-sm hover:bg-black/10"
+            >
+                <span>Schedule</span>
+            </a>
+            <a href={baseUrl} class="p-2 rounded-sm hover:bg-black/10">
+                <span>Catalog</span>
+            </a>
+          ) : <></>
+        }
     </div>
 </header>
