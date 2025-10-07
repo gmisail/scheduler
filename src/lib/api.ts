@@ -20,8 +20,8 @@ export function fetchTerms(): Promise<Term[]> {
   return fetchFromR2<Term[]>("uvm/terms.json");
 }
 
-export function fetchDepartments(termId = "2025-09"): Promise<Department[]> {
-  return fetchFromR2<Department[]>(`uvm/${termId}/departments.json`);
+export function fetchDepartments(termId = "202509"): Promise<Department[]> {
+  return fetchFromR2<Department[]>(`uvm/subjects_${termId}.json`);
 }
 
 export function fetchCatalog(termId: string): Promise<CatalogItem[]> {

@@ -24,7 +24,7 @@
             }}
         >
             <b class="mr-2">{department.id}</b>
-            <span>{department.name}</span>
+            <span>{department.label}</span>
         </div>
     </a>
 {/each}
