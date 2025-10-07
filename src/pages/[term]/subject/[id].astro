@@ -29,7 +29,7 @@ export async function getStaticPaths() {
 
         for (const department of departments) {
             const id = department.id.toUpperCase();
-            const name = department.name;
+            const name = department.label;
 
             const courses = catalog
                 .filter((item) => {

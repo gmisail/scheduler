@@ -2,7 +2,7 @@ import type { CatalogItem } from "./catalog";
 import type { Department } from "./department";
 import type { Term } from "./term";
 
-const R2_BASE_URL = "https://pub-64d1712225e343d78b0dbf7c06803c3a.r2.dev";
+const R2_BASE_URL = "https://static.moosescheduler.com";
 
 async function fetchFromR2<T>(path: string): Promise<T> {
   const response = await fetch(`${R2_BASE_URL}/${path}`);
