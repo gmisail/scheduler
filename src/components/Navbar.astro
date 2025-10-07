@@ -2,8 +2,7 @@
 import Switcher from "@components/navbar/Switcher.svelte";
 
 const { term: currentTerm, terms } = Astro.props;
-
-const baseUrl = "/scheduler/" + currentTerm?.id;
+const baseUrl = "/" + currentTerm?.id;
 ---
 
 <header

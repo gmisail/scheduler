@@ -9,6 +9,6 @@ export default defineConfig({
   },
   compressHTML: true,
   integrations: [svelte()],
-  site: "https://gmisail.me",
-  base: "/scheduler",
+  site: "https://moosescheduler.com",
+  base: "/",
 });

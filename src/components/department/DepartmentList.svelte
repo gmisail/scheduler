@@ -15,12 +15,7 @@
 </script>
 
 {#each departments as department}
-    <a
-        href={"/scheduler/" +
-            term.id +
-            "/subject/" +
-            department.id.toUpperCase()}
-    >
+    <a href={"/" + term.id + "/subject/" + department.id.toUpperCase()}>
         <div
             class={{
                 "p-4 rounded-sm dark:text-white dark:bg-black/10 hover:bg-gray-50 dark:hover:bg-black/20 border-1 border-gray-300 dark:border-gray-600": true,

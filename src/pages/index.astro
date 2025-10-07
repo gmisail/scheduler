@@ -13,7 +13,7 @@ const futureTerms = terms
     .toSorted((a, b) => a.id.localeCompare(b.id));
 
 const nextTerm = futureTerms?.[0] ?? terms[0];
-const url = `/scheduler/${nextTerm?.id}/schedule`;
+const url = `/${nextTerm?.id}/schedule`;
 ---
 
 <head>
