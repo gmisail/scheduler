@@ -1,8 +1,11 @@
 ---
+import type { Term } from "@lib/term";
 import Navbar from "../components/Navbar.astro";
 import "../styles/global.css";
 
-const { terms, term } = Astro.props;
+let { terms, term } = Astro.props;
+
+terms = terms.filter((t: Term) => t.id > "202506");
 ---
 
 <!doctype html>
