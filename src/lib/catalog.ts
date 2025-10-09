@@ -11,7 +11,6 @@ export type BlockItem = {
   instructor: string;
   start_time: string;
   end_time: string;
-  day: string;
 };
 
 export type SectionItem = {
@@ -147,6 +146,7 @@ export function ingestCourseItem(course: CourseItem): Course {
             .map((block) => {
               return {
                 ...block,
+                day: day.day,
                 start_time: timeToMinutes(block.start_time),
                 end_time: timeToMinutes(block.end_time),
               };
