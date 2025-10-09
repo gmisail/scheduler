@@ -2,11 +2,20 @@ import superjson from "superjson";
 import type { Course, Section } from "../catalog";
 import type { Term } from "@lib/term";
 
+// This allows us to version changes to the schema stored in local storage. It is potentially dangerous, as
+// updating it will invalidate _all_ schedules currently in use. Be very careful when updating it. In the future
+// it might be useful to migrate data instead.
+const STATE_VERSION = 1;
+
 export type ScheduleState = {
   selected: Set<string>;
   courses: Map<string, Course>;
   numCourses: Map<string, number>;
 };
+
+function stateKey(term: Term): string {
+  return `schedule#${term.id}#${STATE_VERSION}`;
+}
 
 /**
  * Add or remove a section from the schedule context.
@@ -62,7 +71,7 @@ export function isSectionSelected(
  * @returns
  */
 export function getTermState(term: Term): ScheduleState {
-  const buffer = window.localStorage.getItem(`schedule#${term.id}`);
+  const buffer = window.localStorage.getItem(stateKey(term));
 
   if (buffer) {
     return superjson.parse<ScheduleState>(buffer);
@@ -77,5 +86,5 @@ export function getTermState(term: Term): ScheduleState {
 
 function saveTermState(term: Term, state: ScheduleState) {
   const buffer = superjson.stringify(state);
-  window.localStorage.setItem(`schedule#${term.id}`, buffer);
+  window.localStorage.setItem(stateKey(term), buffer);
 }
